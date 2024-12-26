@@ -1,3 +1,4 @@
+import copy
 import types
 from task_1 import FlatIterator
 from task_3 import FlatIteratorHard
@@ -65,7 +66,45 @@ def test_3():
     assert list(FlatIteratorHard(list_of_lists_2)) == ['a', 'b', 'c', 'd', 'e', 'f', 'h', False, 1, 2, None, '!']
 
 
+def flat_generator_hard(list_of_list):
+    new_list = copy.deepcopy(list_of_list)
+    for lst in new_list:
+        while lst:
+            temp_lst = []
+            for element in lst:
+                if not isinstance(element, list):
+                    yield element
+                    lst.remove(element)
+                    break
+                else:
+                    item = lst.pop(0)
+                    temp_lst.extend(item)
+                    lst = temp_lst + lst
+                    break
+
+
+def test_4():
+
+    list_of_lists_2 = [
+        [['a'], ['b', 'c']],
+        ['d', 'e', [['f'], 'h'], False],
+        [1, 2, None, [[[[['!']]]]], []]
+    ]
+
+    for flat_iterator_item, check_item in zip(
+            flat_generator_hard(list_of_lists_2),
+            ['a', 'b', 'c', 'd', 'e', 'f', 'h', False, 1, 2, None, '!']
+    ):
+
+        assert flat_iterator_item == check_item
+
+    assert list(flat_generator_hard(list_of_lists_2)) == ['a', 'b', 'c', 'd', 'e', 'f', 'h', False, 1, 2, None, '!']
+
+    assert isinstance(flat_generator_hard(list_of_lists_2), types.GeneratorType)
+
+
 if __name__ == '__main__':
     test_1()
     test_2()
     test_3()
+    test_4()
