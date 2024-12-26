@@ -1,5 +1,6 @@
 import types
 from task_1 import FlatIterator
+from task_3 import FlatIteratorHard
 
 
 def test_1():
@@ -46,6 +47,25 @@ def test_2():
     assert isinstance(flat_generator(list_of_lists_1), types.GeneratorType)
 
 
+def test_3():
+
+    list_of_lists_2 = [
+        [['a'], ['b', 'c']],
+        ['d', 'e', [['f'], 'h'], False],
+        [1, 2, None, [[[[['!']]]]], []]
+    ]
+
+    for flat_iterator_item, check_item in zip(
+            FlatIteratorHard(list_of_lists_2),
+            ['a', 'b', 'c', 'd', 'e', 'f', 'h', False, 1, 2, None, '!']
+    ):
+
+        assert flat_iterator_item == check_item
+
+    assert list(FlatIteratorHard(list_of_lists_2)) == ['a', 'b', 'c', 'd', 'e', 'f', 'h', False, 1, 2, None, '!']
+
+
 if __name__ == '__main__':
     test_1()
     test_2()
+    test_3()
